@@ -1,0 +1,19 @@
+{
+  //デバックの設定
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+        "name": "Launch",
+        // "type": "godlvdap",
+        "type": "go",
+        "request": "launch",//modeによって変化
+        "mode": "auto",//debug,test,execとか色々ある.autoはその都度判断する
+        "program": "${fileDirname}",//デバック対象のファイル
+        "env": {},
+        "args": []
+    }
+]
+}
