@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
+	msg := "hello world"
+	fmt.Println(msg)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		msg := "hello world"
-		fmt.Println(msg)
 		w.Write([]byte(`
 		<html>
 	    <head>
