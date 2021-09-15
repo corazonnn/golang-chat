@@ -16,7 +16,7 @@ type room struct {
 
 func (r *room) run() {
 	for {
-		select { //goroutineを使用する前にselectを置いている??
+		select { //goroutineを使用する前にselectを置いている??複数のチャネルを同時に待ち状態にしたい時
 		case client := <-r.join: //並行処理.r.joinに値が入ってきた時
 			//参加
 			r.clients[client] = true
@@ -50,18 +50,18 @@ var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBuffer
 //*room型をhttp.Handler型に適合(ServeHTTPメソッドを定義)することで,*roomはHTTPハンドラとして扱えるようになる
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	//websocketを利用するためにUpgradeする必要がある
-	socket, err := upgrader.Upgrade(w, req, nil) //何してる？？websocketコネクションの取得
+	socket, err := upgrader.Upgrade(w, req, nil) //何してる？？HTTP通信からwebsocket通信に更新(具体的にはハンドシェイクしてる)
 	if err != nil {
 		log.Fatal("ServeHTTP:", err)
 		return
 	}
-	client := &client{ //クライアントの構造体のclientを生成
+	client := &client{ //クライアントの構造体のclientを生成.クライアント作ってるけどこれは誰??
 		socket: socket,
 		send:   make(chan []byte, messageBufferSize),
 		room:   r,
 	}
 	r.join <- client                     //新しいクライアントが生成されたら、そいつをroomにjoinさせる
 	defer func() { r.leave <- client }() //最後は退室させる.いつ呼ばれるの？？
-	go client.write()                    //メッセージを受信状態
+	go client.write()                    //メッセージを受信状態.goroutineとして実行
 	client.read()
 }
