@@ -24,7 +24,7 @@ func newRoom() *room {
 	}
 }
 
-func (r *room) run() {
+func (r *room) run() { //チャットルームを開始
 	for {
 		select { //goroutineを使用する前にselectを置いている??複数のチャネルを同時に待ち状態にしたい時
 		case client := <-r.join: //並行処理.r.joinに値が入ってきた時
