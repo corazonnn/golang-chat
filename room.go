@@ -1,5 +1,12 @@
 package main
 
+import (
+	"log"
+	"net/http"
+
+	"github.com/gorilla/websocket"
+)
+
 type room struct {
 	forward chan []byte      //forwardは他のクライアントに転送するためのメッセージを保持するチャネル
 	join    chan *client     //チャットルームに参加しようとしてるクライアントのためのチャネル
@@ -31,4 +38,30 @@ func (r *room) run() {
 			}
 		}
 	}
+}
+
+const (
+	socketBufferSize  = 1024 //ソケットのバッファサイズ
+	messageBufferSize = 256  //メッセージのバッファサイズ
+)
+
+var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBufferSize: socketBufferSize}
+
+//*room型をhttp.Handler型に適合(ServeHTTPメソッドを定義)することで,*roomはHTTPハンドラとして扱えるようになる
+func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	//websocketを利用するためにUpgradeする必要がある
+	socket, err := upgrader.Upgrade(w, req, nil) //何してる？？websocketコネクションの取得
+	if err != nil {
+		log.Fatal("ServeHTTP:", err)
+		return
+	}
+	client := &client{ //クライアントの構造体のclientを生成
+		socket: socket,
+		send:   make(chan []byte, messageBufferSize),
+		room:   r,
+	}
+	r.join <- client                     //新しいクライアントが生成されたら、そいつをroomにjoinさせる
+	defer func() { r.leave <- client }() //最後は退室させる.いつ呼ばれるの？？
+	go client.write()                    //メッセージを受信状態
+	client.read()
 }
