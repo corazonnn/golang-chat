@@ -14,6 +14,16 @@ type room struct {
 	clients map[*client]bool //在室している全てのクライアントが保持される
 }
 
+//newRoomではすぐに利用できるチャットルームを生成して返す
+func newRoom() *room {
+	return &room{
+		forward: make(chan []byte),
+		join:    make(chan *client),
+		leave:   make(chan *client),
+		clients: make(map[*client]bool),
+	}
+}
+
 func (r *room) run() {
 	for {
 		select { //goroutineを使用する前にselectを置いている??複数のチャネルを同時に待ち状態にしたい時
