@@ -14,7 +14,7 @@
 </head>
 
 <body>
-  <ul id="messages"></ul>
+  <ul id="messages"></ul><!--ここにjsでliを追加していく感じ-->
   websocketを使ったチャットアプリケーション
   <form id="chatbox">
     <textarea></textarea>
@@ -23,18 +23,19 @@
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
   </script>
   <script>
+    //jquery
     $(function () {
       var socket = null;
       var msgBox = $("#chatbox textarea");
       var messages = $("#messages");
-      $("#chatbox").submit(function () {
+      $("#chatbox").submit(function () {//submitが押されたら
         if (!msgBox.val()) return false;
         if (!socket) {
           alert("エラー：websocket接続が行われていません。")
           return false;
         }
         socket.send(msgBox.val());
-        msgBox.val("");
+        msgBox.val("");//formの中は空にする
         return false
       });
       if (!window["WebSocket"]) {
@@ -44,6 +45,7 @@
         socket.onclose = function () {
           alert("接続が終了しました。");
         }
+        //messagesのDOMにliを追加
         socket.onmessage = function (e) {
           messages.append($("<li>").text(e.data));
         }
