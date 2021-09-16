@@ -17,5 +17,4 @@ func TestNew(t *testing.T) {
 			t.Errorf("'%s'という誤った文字列が出力されました", buf.String())
 		}
 	}
-	t.Error("まだテストを作成していません")
 }
