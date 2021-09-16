@@ -26,8 +26,8 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	var addr = flag.String("addr", ":8080", "アプリケーションのアドレス")
-	flag.Parse()
+	var addr = flag.String("addr", ":8080", "アプリケーションのアドレス") //フラグ addr を宣言し、そのデフォルト値を ":8080" とし、フラグの短い説明を与えている
+	flag.Parse()                                             //コマンドラインの引数のフラグが解析され、フラグが変数にバインドされる
 	r := newRoom()
 	http.Handle("/", &templateHandler{filename: "chat.html"})
 	http.Handle("/room", r)
