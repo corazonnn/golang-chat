@@ -18,3 +18,9 @@ func TestNew(t *testing.T) {
 		}
 	}
 }
+
+//以上終了を発生させないために,Traceメソッドを呼び出す前にOffメソッドによる「サイレント」なTraceを取得=どこにも出力しないtraceを得る
+func TestOff(t *testing.T) {
+	var silentTracer Tracer = Off()
+	silentTracer.Trace("データ")
+}
