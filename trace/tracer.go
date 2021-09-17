@@ -13,7 +13,7 @@ type tracer struct {
 	out io.Writer //ここに情報が出力されていく
 }
 
-func New(w io.Writer) Tracer {
+func New(w io.Writer) Tracer { //出力する場所(標準出力、ファイル、csv等)を指定できる
 	return &tracer{out: w}
 }
 

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"book-chat/trace"
 	"log"
 	"net/http"
 
@@ -12,6 +13,7 @@ type room struct {
 	join    chan *client     //チャットルームに参加しようとしてるクライアントのためのチャネル
 	leave   chan *client     //チャットルームから退席しようとしているクライアントのためのチャネル
 	clients map[*client]bool //在室している全てのクライアントが保持される
+	tracer  trace.Tracer     //チャット上で行われた操作のログを受け取る
 }
 
 //newRoomではすぐに利用できるチャットルームを生成して返す
@@ -30,20 +32,25 @@ func (r *room) run() { //チャットルームを開始
 		case client := <-r.join: //並行処理.r.joinに値が入ってきた時
 			//参加
 			r.clients[client] = true
+			r.tracer.Trace("新しいクライアントが参加しました")
 		case client := <-r.leave:
 			//退室
 			delete(r.clients, client)
 			close(client.send)
+			r.tracer.Trace("クライアントが退室しました")
 		case msg := <-r.forward:
+			r.tracer.Trace("メッセージを受信しました：", string(msg)) //これから全員の.sendに入れていく＝送信していく
 			//全てのクライアントにメッセージを転送
 			for client := range r.clients {
 				select {
 				case client.send <- msg:
 					//メッセージを受信
+					r.tracer.Trace("--クライアントに送信されました")
 				default:
 					//送信に失敗
 					delete(r.clients, client)
 					close(client.send)
+					r.tracer.Trace("--送信に失敗しました。クライアントをクリーンアップします")
 				}
 			}
 		}
