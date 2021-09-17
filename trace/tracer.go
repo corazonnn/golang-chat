@@ -25,7 +25,7 @@ func (t *tracer) Trace(a ...interface{}) {
 
 type nilTracer struct{}
 
-//なんのためのTraceメソッド??
+//なんのためのTraceメソッド??roomのstructで、trace の型はtrace.Tracerになっている。Tracerインターフェースは、Traceメソッドを実装している必要があるので空っぽだけどTraceメソッドをつけた
 func (t *nilTracer) Trace(a ...interface{}) {}
 
 func Off() Tracer {
