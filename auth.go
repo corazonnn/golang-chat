@@ -1,6 +1,27 @@
 package main
 
-import "net/http"
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"strings"
+)
+
+//loginHandlerはサードパーティへのログインの処理を受け持つ.アプリ内ではなくどこか外部へ認証を行うってこと?
+//パスの形式：　/auth/{action}/{provider}
+func loginHandler(w http.ResponseWriter, r *http.Request) {
+	segs := strings.Split(r.URL.Path, "/") //segsの中身は [][auth][action][provider]
+	action := segs[2]
+	provider := segs[3]
+	switch action {
+	case "login":
+		log.Println("TODO: ログイン処理", provider)
+	default:
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "アクション%sには非対応です", action)
+
+	}
+}
 
 type authHandler struct {
 	next http.Handler //wrap用かな
