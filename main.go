@@ -33,7 +33,8 @@ func main() {
 	//④認証成功したら、templateHandlerのServeHTTPが呼ばれる
 	//④認証失敗したら、http.ResponseWriterに対してHeader,WriteHandlerを呼び出し、ログインページにリダイレクト
 	http.Handle("/chat", MustAuth(&templateHandler{filename: "chat.html"}))
-	// http.Handle("/", &templateHandler{filename: "chat.html"})
+	http.Handle("/login", &templateHandler{filename: "login.html"})
+
 	http.Handle("/room", r)
 	//チャットルームを開始
 	go r.run()
