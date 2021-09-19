@@ -7,6 +7,11 @@ import (
 	"path/filepath"
 	"sync"
 	"text/template"
+
+	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/gomniauth/providers/facebook"
+	"github.com/stretchr/gomniauth/providers/github"
+	"github.com/stretchr/gomniauth/providers/google"
 )
 
 //【目的】ファイルからテンプレートを作成し、データを出力する
@@ -28,6 +33,13 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 	var addr = flag.String("addr", ":8080", "アプリケーションのアドレス") //フラグ addr を宣言し、そのデフォルト値を ":8080" とし、フラグの短い説明を与えている
 	flag.Parse()                                             //コマンドラインの引数のフラグが解析され、フラグが変数にバインドされる
+	//Gomniauthのセットアップ
+	gomniauth.SetSecurityKey("corazon73647364")
+	gomniauth.WithProviders(
+		facebook.New("350210712146-9kfrktdjogrie9ru09mnclesuatlt4ib.apps.googleusercontent.com", "i0hMhZpjve1RfMzwWd4Bv8nM", "http://localhost:8080/auth/callback/facebook"),
+		github.New("350210712146-9kfrktdjogrie9ru09mnclesuatlt4ib.apps.googleusercontent.com", "i0hMhZpjve1RfMzwWd4Bv8nM", "http://localhost:8080/auth/callback/github"),
+		google.New("350210712146-9kfrktdjogrie9ru09mnclesuatlt4ib.apps.googleusercontent.com", "i0hMhZpjve1RfMzwWd4Bv8nM", "http://localhost:8080/auth/callback/google"),
+	)
 	r := newRoom()
 	//①"/chat"にアクセス②MustAuth内でtemplateHandlerをラップしたauthHandlerが生成③authHandlerが生成されたことでauthHandlerのServeHTTPが呼ばれる(authというcookieの有無をチェック)
 	//④認証成功したら、templateHandlerのServeHTTPが呼ばれる
