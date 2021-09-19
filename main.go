@@ -12,6 +12,7 @@ import (
 	"github.com/stretchr/gomniauth/providers/facebook"
 	"github.com/stretchr/gomniauth/providers/github"
 	"github.com/stretchr/gomniauth/providers/google"
+	"github.com/stretchr/objx"
 )
 
 //【目的】ファイルからテンプレートを作成し、データを出力する
@@ -27,7 +28,18 @@ func (t *templateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			template.Must(template.ParseFiles(filepath.Join("templates",
 				t.filename)))
 	})
-	t.templ.Execute(w, r)
+	//なぜ
+	data := map[string]interface{}{
+		"Host": r.Host,
+	}
+	//data=>map[Host:localhost:8080]
+
+	//もし認証されているなら
+	if authCookie, err := r.Cookie("auth"); err == nil {
+		data["UserData"] = objx.MustFromBase64(authCookie.Value)
+	}
+	//data => map[Host:localhost:8080 UserData:map[name:相川佑也]]
+	t.templ.Execute(w, data) //第二引数は、t.templの{{}}の中に何を入れているのか
 }
 
 func main() {
