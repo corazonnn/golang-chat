@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/objx"
 )
 
 //loginHandlerはサードパーティへのログインの処理を受け持つ.アプリ内ではなくどこか外部へ認証を行うってこと?
@@ -30,6 +31,41 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		//レスポンスとしてリダイレクトしたい
 		w.Header().Set("Location", loginUrl)
 		w.WriteHeader(http.StatusTemporaryRedirect)
+
+	case "callback": //認証後のリダイレクト先
+
+		//①認証プロバイダのオブジェクトを取得
+		provider, err := gomniauth.Provider(provider)
+		if err != nil {
+			log.Fatalln("認証プロバイダーの取得に失敗しました")
+		}
+
+		//②
+		creds, err := provider.CompleteAuth(objx.MustFromURLQuery(r.URL.RawQuery))
+		if err != nil {
+			log.Fatalln("認証を完了できませんでした", provider, "-", err)
+		}
+
+		//③認証情報を使ってユーザーの情報を取得できる
+		user, err := provider.GetUser(creds)
+		if err != nil {
+			log.Fatalln("ユーザーの取得に失敗しました", provider, "-", err)
+		}
+
+		//④Nameフィールドの値をエンコード
+		authCookieValue := objx.New(map[string]interface{}{
+			"name": user.Name(),
+		}).MustBase64()
+
+		//⑤Cookieに保持する
+		http.SetCookie(w, &http.Cookie{Name: "auth",
+			Value: authCookieValue,
+			Path:  "/"})
+
+		//⑥本来のアクセス先である/chatにリダイレクト
+		w.Header()["Location"] = []string{"/chat"}
+		w.WriteHeader(http.StatusTemporaryRedirect)
+
 	default:
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "アクション%sには非対応です", action)
