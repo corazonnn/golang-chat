@@ -54,7 +54,8 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 
 		//④Nameフィールドの値をエンコード
 		authCookieValue := objx.New(map[string]interface{}{
-			"name": user.Name(),
+			"name":       user.Name(),
+			"avatar_url": user.AvatarURL(),
 		}).MustBase64()
 
 		//⑤Cookieに保持する

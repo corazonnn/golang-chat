@@ -59,6 +59,10 @@
           var day = msg.When.slice(8, 10)
           messages.append(
             $("<li>").append(
+              $("<img>").css({
+                width:50,
+                verticalAlign:"middle"
+              }).attr("src",msg.avatarURL),
               $("<strong>").text(msg.Name + ": "),
               $("<span>").text(msg.Message),
               $("<span>").text("     日時:" + year + "年" + month + "月" + day + "日")
