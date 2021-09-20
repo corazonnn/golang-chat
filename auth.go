@@ -79,7 +79,8 @@ type authHandler struct {
 }
 
 func (h *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if _, err := r.Cookie("auth"); err == http.ErrNoCookie {
+	//Cookieがまだない || ログアウト状態(ログアウトする際にcookie.Value = ""にしてるから)
+	if cookie, err := r.Cookie("auth"); err == http.ErrNoCookie || cookie.Value == "" {
 		//未認証
 		w.Header().Set("Location", "/login")        //http.ResponseWriterに対してHeader呼び出す
 		w.WriteHeader(http.StatusTemporaryRedirect) //http.ResponseWriterに対してWriteHeader呼び出す。ログインページにリダイレクト

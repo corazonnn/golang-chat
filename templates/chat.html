@@ -21,6 +21,7 @@
     {{.UserData.name}}:<br />
     <textarea></textarea>
     <input type="submit" value="送信" />
+    または、<a href="/logout">サインアウト</a>
   </form>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
   </script>
@@ -31,13 +32,11 @@
       var msgBox = $("#chatbox textarea");
       var messages = $("#messages");
       $("#chatbox").submit(function () {//submitが押されたら
-        console.log("submit")
         if (!msgBox.val()) return false;
         if (!socket) {
           alert("エラー：websocket接続が行われていません。")
           return false;
         }
-        console.log("no error")
         //Json.stringifyで正式なJSON形式に変換
         socket.send(JSON.stringify({ "Message": msgBox.val() }));//クライアント側からサーバー側に送信
         msgBox.val("");//formの中は空にする
@@ -62,7 +61,7 @@
               $("<img>").css({
                 width:50,
                 verticalAlign:"middle"
-              }).attr("src",msg.avatarURL),
+              }).attr("src",msg.AvatarURL),
               $("<strong>").text(msg.Name + ": "),
               $("<span>").text(msg.Message),
               $("<span>").text("     日時:" + year + "年" + month + "月" + day + "日")

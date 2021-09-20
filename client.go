@@ -34,7 +34,7 @@ func (c *client) read() { //クライアントがwebsocketからデータを読�
 func (c *client) write() { //writeってwebsocketからプログラム内に書き出してる
 	for msg := range c.send {
 		//messageオブジェクトをサーバー側から、JSON形式に変換してクライアント側に送る
-		if err := c.socket.WriteJSON(msg); err != nil {
+		if err := c.socket.WriteJSON(msg); err != nil { //これって具体的にはどこに飛ばしてんの??
 			break
 		}
 	}
