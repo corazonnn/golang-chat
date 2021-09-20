@@ -4,4 +4,4 @@ WebSocketを使ったチャットアプリケーション
 - 認証機能...Googleアカウントでログイン
 
 ## デモ
-[![Image from Gyazo](https://i.gyazo.com/a5c3447ed4c9b1c783b987e0453b4261.png)](https://gyazo.com/a5c3447ed4c9b1c783b987e0453b4261)
+[![Image from Gyazo](https://i.gyazo.com/2824c947777613ebec2c370edf68cf98.png)](https://gyazo.com/2824c947777613ebec2c370edf68cf98)
