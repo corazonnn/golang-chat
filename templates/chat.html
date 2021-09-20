@@ -35,7 +35,7 @@
           alert("エラー：websocket接続が行われていません。")
           return false;
         }
-        socket.send(msgBox.val());
+        socket.send(msgBox.val());//ここで送ってる
         msgBox.val("");//formの中は空にする
         return false
       });

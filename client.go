@@ -13,7 +13,7 @@ type client struct {
 
 func (c *client) read() { //クライアントがwebsocketからデータを読み込む
 	for {
-		if _, msg, err := c.socket.ReadMessage(); err == nil { //readmesageでエラーが出ないなら
+		if _, msg, err := c.socket.ReadMessage(); err == nil { //chat.htmlからsocket.sendによってwebsocket上に乗せられたデータの参照
 			c.room.forward <- msg //msgが読みこれるまで待つ.goroutine使用
 		} else {
 			break
