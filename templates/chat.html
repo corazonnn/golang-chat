@@ -14,10 +14,11 @@
 </head>
 
 <body>
-  <ul id="messages"></ul><!--ここにjsでliを追加していく感じ-->
+  <ul id="messages"></ul>
+  <!--ここにjsでliを追加していく感じ-->
   websocketを使ったチャットアプリケーション
   <form id="chatbox">
-    {{.UserData.name}}:<br/>
+    {{.UserData.name}}:<br />
     <textarea></textarea>
     <input type="submit" value="送信" />
   </form>
@@ -38,7 +39,7 @@
         }
         console.log("no error")
         //Json.stringifyで正式なJSON形式に変換
-        socket.send(JSON.stringify({"Message":msgBox.val()}));//クライアント側からサーバー側に送信
+        socket.send(JSON.stringify({ "Message": msgBox.val() }));//クライアント側からサーバー側に送信
         msgBox.val("");//formの中は空にする
         return false
       });
@@ -51,14 +52,17 @@
         }
         //messagesのDOMにliを追加
         socket.onmessage = function (e) {
-          console.log("socket.onmessage")
-          // var msg = eval("("+e.data+")")
           var msg = JSON.parse(e.data)
-          console.log(msg)
+          //2021-09-20
+          var year = msg.When.slice(0, 4)
+          var month = msg.When.slice(5, 7)
+          var day = msg.When.slice(8, 10)
           messages.append(
             $("<li>").append(
               $("<strong>").text(msg.Name + ": "),
-              $("<span>").text(msg.Message)
+              $("<span>").text(msg.Message),
+              $("<span>").text("     日時:" + year + "年" + month + "月" + day + "日")
+
             )
           );
         }
