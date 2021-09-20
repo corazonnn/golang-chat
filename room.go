@@ -6,10 +6,11 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
+	"github.com/stretchr/objx"
 )
 
 type room struct {
-	forward chan []byte      //forwardは他のクライアントに転送するためのメッセージを保持するチャネル
+	forward chan *message    //forwardは他のクライアントに転送するためのメッセージを保持するチャネル
 	join    chan *client     //チャットルームに参加しようとしてるクライアントのためのチャネル
 	leave   chan *client     //チャットルームから退席しようとしているクライアントのためのチャネル
 	clients map[*client]bool //在室している全てのクライアントが保持される
@@ -19,7 +20,7 @@ type room struct {
 //newRoomではすぐに利用できるチャットルームを生成して返す
 func newRoom() *room {
 	return &room{
-		forward: make(chan []byte),
+		forward: make(chan *message),
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
@@ -40,7 +41,7 @@ func (r *room) run() { //チャットルームを開始
 			close(client.send)
 			r.tracer.Trace("クライアントが退室しました")
 		case msg := <-r.forward:
-			r.tracer.Trace("メッセージを受信しました：", string(msg)) //これから全員の.sendに入れていく＝送信していく
+			r.tracer.Trace("メッセージを受信しました：", msg.Message) //これから全員の.sendに入れていく＝送信していく
 			//全てのクライアントにメッセージを転送
 			for client := range r.clients {
 				select {
@@ -73,10 +74,17 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		log.Fatal("ServeHTTP:", err)
 		return
 	}
+	//Cookieメソッドでユーザー情報を取り出す
+	authCookie, err := req.Cookie("auth")
+	if err != nil {
+		log.Fatal("クッキーの取得に失敗しました：", err)
+		return
+	}
 	client := &client{ //クライアントの構造体のclientを生成.クライアント作ってるけどこれは誰??
-		socket: socket,
-		send:   make(chan []byte, messageBufferSize),
-		room:   r,
+		socket:   socket,
+		send:     make(chan *message, messageBufferSize),
+		room:     r,
+		userData: objx.MustFromBase64(authCookie.Value), //エンコードされたクッキーの値を復元
 	}
 	r.join <- client                     //新しいクライアントが生成されたら、そいつをroomにjoinさせる
 	defer func() { r.leave <- client }() //最後は退室させる.いつ呼ばれるの？？

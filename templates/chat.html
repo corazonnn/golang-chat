@@ -30,12 +30,15 @@
       var msgBox = $("#chatbox textarea");
       var messages = $("#messages");
       $("#chatbox").submit(function () {//submitが押されたら
+        console.log("submit")
         if (!msgBox.val()) return false;
         if (!socket) {
           alert("エラー：websocket接続が行われていません。")
           return false;
         }
-        socket.send(msgBox.val());//ここで送ってる
+        console.log("no error")
+        //Json.stringifyで正式なJSON形式に変換
+        socket.send(JSON.stringify({"Message":msgBox.val()}));//クライアント側からサーバー側に送信
         msgBox.val("");//formの中は空にする
         return false
       });
@@ -48,7 +51,16 @@
         }
         //messagesのDOMにliを追加
         socket.onmessage = function (e) {
-          messages.append($("<li>").text(e.data));
+          console.log("socket.onmessage")
+          // var msg = eval("("+e.data+")")
+          var msg = JSON.parse(e.data)
+          console.log(msg)
+          messages.append(
+            $("<li>").append(
+              $("<strong>").text(msg.Name + ": "),
+              $("<span>").text(msg.Message)
+            )
+          );
         }
       }
     });
