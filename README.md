@@ -7,4 +7,4 @@ WebSocketを使ったチャットアプリケーション
 - アバター画像表示
 
 ## デモ
-[![Image from Gyazo](https://i.gyazo.com/2824c947777613ebec2c370edf68cf98.png)](https://gyazo.com/2824c947777613ebec2c370edf68cf98)
+[![Image from Gyazo](https://i.gyazo.com/7cf87f4e4b00243751f3c87212de5bb1.png)](https://gyazo.com/7cf87f4e4b00243751f3c87212de5bb1)

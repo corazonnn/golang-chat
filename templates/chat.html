@@ -2,6 +2,8 @@
 
 <head>
   <title>chat</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
   <style>
     input {
       display: block;
@@ -10,18 +12,51 @@
     ul {
       list-style: none;
     }
+    ul li {
+      margin: 5px;
+
+    }
   </style>
 </head>
 
 <body>
-  <ul id="messages"></ul>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light p-3">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/chat">websocketを使ったチャットアプリケーション</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/login">ログイン</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+
+
+
+
+  <div class="card m-5">
+    <div class="card-body">
+      <ul id="messages"></ul>
+    </div>
+  </div>
   <!--ここにjsでliを追加していく感じ-->
-  websocketを使ったチャットアプリケーション
-  <form id="chatbox">
+  
+  <form id="chatbox" class="m-5">
     {{.UserData.name}}:<br />
-    <textarea></textarea>
-    <input type="submit" value="送信" />
-    または、<a href="/logout">サインアウト</a>
+    <div class="form-floating">
+      <textarea class="form-control w-75" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+      <label for="floatingTextarea">Comments</label>
+    </div>
+    <!-- <input type="submit" value="送信" /> -->
+    <button type="submit" class="btn btn-primary mt-3 mb-2">送信</button>
+    <div>または、<a href="/logout">サインアウト</a></div>
   </form>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
   </script>
@@ -59,9 +94,9 @@
           messages.append(
             $("<li>").append(
               $("<img>").css({
-                width:50,
-                verticalAlign:"middle"
-              }).attr("src",msg.AvatarURL),
+                width: 50,
+                verticalAlign: "middle"
+              }).attr("src", msg.AvatarURL),
               $("<strong>").text(msg.Name + ": "),
               $("<span>").text(msg.Message),
               $("<span>").text("     日時:" + year + "年" + month + "月" + day + "日")
@@ -72,6 +107,9 @@
       }
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>
