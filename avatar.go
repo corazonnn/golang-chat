@@ -1,6 +1,12 @@
 package main
 
-import "errors"
+import (
+	"crypto/md5"
+	"errors"
+	"fmt"
+	"io"
+	"strings"
+)
 
 //AvatarインスタンスがアバターのURLを返すことができない場合に発生するエラー
 var ErrNoAvatarURL = errors.New("chat: アバターのURLを取得できません")
@@ -11,9 +17,10 @@ type Avatar interface { //①Avatarインターフェースの機能が関数と
 	GetAvatarURL(c *client) (string, error)
 }
 
+//認証サーバーからアバターURLを取得
 type AuthAvatar struct{} //②AuthAvatarの構造体を定義
 
-var UserAuthAvatar AuthAvatar //④structからオブジェクトを生成
+var UserAuthAvatar AuthAvatar //④structからオブジェクトを生成 ⑤へ
 
 func (_ AuthAvatar) GetAvatarURL(c *client) (string, error) { //③インターフェースを満たすようにメソッドを定義
 	//クライアントのユーザー情報の中からavatar_urlをとってくる
@@ -25,7 +32,18 @@ func (_ AuthAvatar) GetAvatarURL(c *client) (string, error) { //③インター�
 	return "", ErrNoAvatarURL
 }
 
-//④以降は、このメソッドを使うための処理を記述していく
-//④structからオブジェクトを生成
-//⑤Avatarインターフェースを持つオブジェクトに定義
-//⑥オブジェクト.メソッドで使う
+//GravatarからアバターURLを取得
+type GravatarAvatar struct{}
+
+var UseGravatar GravatarAvatar
+
+func (_ GravatarAvatar) GetAvatarURL(c *client) (string, error) {
+	if email, ok := c.userData["email"]; ok { //ユーザー情報にemailが存在する
+		if emailStr, ok := email.(string); ok { //string型に直すことができた
+			m := md5.New()                                                      //MD5アルゴリズム
+			io.WriteString(m, strings.ToLower(emailStr))                        //emailを全て小文字に直す & MD5アルゴリズムに適用
+			return fmt.Sprintf("//www.gravatar.com/avatar/%x", m.Sum(nil)), nil //算出したハッシュ値をGravatarURLに埋め込む
+		}
+	}
+	return "", ErrNoAvatarURL
+}
