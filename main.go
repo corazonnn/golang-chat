@@ -52,7 +52,7 @@ func main() {
 		github.New("350210712146-9kfrktdjogrie9ru09mnclesuatlt4ib.apps.googleusercontent.com", "i0hMhZpjve1RfMzwWd4Bv8nM", "http://localhost:8080/auth/callback/github"),
 		google.New("350210712146-9kfrktdjogrie9ru09mnclesuatlt4ib.apps.googleusercontent.com", "i0hMhZpjve1RfMzwWd4Bv8nM", "http://localhost:8080/auth/callback/google"),
 	)
-	r := newRoom()
+	r := newRoom(UserAuthAvatar)
 	//①"/chat"にアクセス②MustAuth内でtemplateHandlerをラップしたauthHandlerが生成③authHandlerが生成されたことでauthHandlerのServeHTTPが呼ばれる(authというcookieの有無をチェック)
 	//④認証成功したら、templateHandlerのServeHTTPが呼ばれる
 	//④認証失敗したら、http.ResponseWriterに対してHeader,WriteHandlerを呼び出し、ログインページにリダイレクト
