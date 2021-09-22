@@ -21,10 +21,10 @@ func (c *client) read() { //クライアントがwebsocketからデータを読�
 		if err := c.socket.ReadJSON(&msg); err == nil { //chat.htmlからsocket.sendによってwebsocket上に乗せられたデータの参照
 			msg.When = time.Now()
 			msg.Name = c.userData["name"].(string)
-			msg.AvatarURL, _ = c.room.avatar.GetAvatarURL(c)   //Gravatar
-			if avatarURL, ok := c.userData["avatar_url"]; ok { //Googleアカウント
-				msg.AvatarURL = avatarURL.(string)
-			}
+			msg.AvatarURL, _ = c.room.avatar.GetAvatarURL(c) //Gravatar
+			// if avatarURL, ok := c.userData["avatar_url"]; ok { //Googleアカウント(認証サービスから画像を取得)
+			// 	msg.AvatarURL = avatarURL.(string)
+			// }
 			c.room.forward <- msg //msgが読みこれるまで待つ.goroutine使用
 		} else {
 			break
