@@ -28,7 +28,8 @@ func TestGravatarAvatar(t *testing.T) {
 	//クライアント作成
 	client := new(client)
 	//メールアドレスは必ず必要
-	client.userData = map[string]interface{}{"email": "MyEmailAddress@example.com"}
+	// client.userData = map[string]interface{}{"email": "MyEmailAddress@example.com"}
+	client.userData = map[string]interface{}{"userid": "0bc83cb571cd1c50ba6f3e8a78ef1346"}
 	//作成したクライアントのアバター画像URLを取得する
 	url, err := gravatarAvatar.GetAvatarURL(client)
 	//正しいURLかどうか確認
