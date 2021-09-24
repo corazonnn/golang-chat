@@ -62,6 +62,7 @@ func main() {
 	http.HandleFunc("/auth/", loginHandler)
 	http.Handle("/upload", &templateHandler{filename: "upload.html"})
 	http.HandleFunc("/uploader", uploaderHandler)
+	http.Handle("/avatars/", http.StripPrefix("/avatars/", http.FileServer(http.Dir("./avatars")))) //StripPrefix:/avatars/{{ハッシュ値}}な感じでくるから/avatars/を削除
 	http.HandleFunc("/logout", func(w http.ResponseWriter, r *http.Request) {
 		http.SetCookie(w, &http.Cookie{
 			Name:   "auth",
