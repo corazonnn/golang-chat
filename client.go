@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -22,6 +23,7 @@ func (c *client) read() { //クライアントがwebsocketからデータを読�
 			msg.When = time.Now()
 			msg.Name = c.userData["name"].(string)
 			msg.AvatarURL, _ = c.room.avatar.GetAvatarURL(c) //Gravatar //ここを直接userData["userid"]を参照させるんじゃないかな
+			fmt.Println("msg.avatarURL　is", msg.AvatarURL)
 			// if avatarURL, ok := c.userData["avatar_url"]; ok { //Googleアカウント(認証サービスから画像を取得)
 			// 	msg.AvatarURL = avatarURL.(string)
 			// }
