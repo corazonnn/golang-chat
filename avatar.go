@@ -37,7 +37,20 @@ var UseGravatar GravatarAvatar
 func (_ GravatarAvatar) GetAvatarURL(c *client) (string, error) {
 	if userid, ok := c.userData["userid"]; ok { //ユーザー情報にemailが存在する
 		if useridStr, ok := userid.(string); ok { //string型に直すことができた
-			return fmt.Sprintf("//www.gravatar.com/avatar/" + useridStr), nil //算出したハッシュ値をGravatarURLに埋め込む
+			return fmt.Sprintf("//www.gravatar.com/avatar/" + useridStr), nil //算出したハッシュ値をGravatarURLに埋め込む //fmt.printfは標準出力に表示。ただこの文字列をstring型として変数に受け取りたい。その場合,fmt.Sprintfを使う
+		}
+	}
+	return "", ErrNoAvatarURL
+}
+
+type FileSystemAvatar struct{}
+
+var UseFileSystemAvatar FileSystemAvatar
+
+func (_ FileSystemAvatar) GetAvatarURL(c *client) (string, error) {
+	if userid, ok := c.userData["userid"]; ok {
+		if useridStr, ok := userid.(string); ok {
+			return "/avatars/" + useridStr + ".jpg", nil
 		}
 	}
 	return "", ErrNoAvatarURL
