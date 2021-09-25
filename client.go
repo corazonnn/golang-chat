@@ -22,7 +22,10 @@ func (c *client) read() { //クライアントがwebsocketからデータを読�
 		if err := c.socket.ReadJSON(&msg); err == nil { //chat.htmlからsocket.sendによってwebsocket上に乗せられたデータの参照
 			msg.When = time.Now()
 			msg.Name = c.userData["name"].(string)
-			msg.AvatarURL, _ = c.room.avatar.GetAvatarURL(c) //Gravatar //ここを直接userData["userid"]を参照させるんじゃないかな
+			if avatarURL, ok := c.userData["avatar_url"]; ok {
+				msg.AvatarURL = avatarURL.(string)
+			}
+
 			fmt.Println("msg.avatarURL　is", msg.AvatarURL)
 			// if avatarURL, ok := c.userData["avatar_url"]; ok { //Googleアカウント(認証サービスから画像を取得)
 			// 	msg.AvatarURL = avatarURL.(string)

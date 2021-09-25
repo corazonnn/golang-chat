@@ -5,21 +5,29 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	gomniauthtest "github.com/stretchr/gomniauth/test"
 )
 
 //GetAvatarURLのテスト
 func TestAuthAvatar(t *testing.T) {
 	var authAvatar AuthAvatar
 	//適当に今作成したクライアントをGetAvatarURL()に渡して,ErrNoAvatarURLが変えることの確認
-	client := new(client)
-	url, err := authAvatar.GetAvatarURL(client)
+	// client := new(client)
+	// url, err := authAvatar.GetAvatarURL(client)
+	//単にクライアントを生成してgetavatarURL()につっこむのではなく、段階を経て突っ込む
+	testUser := &gomniauthtest.TestUser{}
+	testUser.On("avatarURL").Return("", ErrNoAvatarURL)
+	testChatUser := &chatUser{User: testUser}
+	url, err := authAvatar.GetAvatarURL(testChatUser)
 	if err != ErrNoAvatarURL {
 		t.Error("値が存在しない場合、AuthAvatar.GetAvatarURLはErrNoAvatarURLを返すべきです")
 	}
-	//値をセットした上でGetAvatarURL()に渡して,値が返ってくることを確認する
 	testUrl := "http://url-to-avatar/"
-	client.userData = map[string]interface{}{"avatar_url": testUrl}
-	url, err = authAvatar.GetAvatarURL(client)
+	testUser = &gomniauthtest.TestUser{}
+	testChatUser.User = testUser
+	testUser.On("avatarURL").Return(testUrl, nil)
+	url, err = authAvatar.GetAvatarURL(testChatUser)
 	if err != nil {
 		t.Error("値が存在する場合、AuthAvatar.GetAvatarURLはエラーを返すべきではありません")
 	} else {
@@ -30,15 +38,12 @@ func TestAuthAvatar(t *testing.T) {
 }
 func TestGravatarAvatar(t *testing.T) {
 	var gravatarAvatar GravatarAvatar
-	//クライアント作成
-	client := new(client)
-	//メールアドレスは必ず必要
-	// client.userData = map[string]interface{}{"email": "MyEmailAddress@example.com"}
-	client.userData = map[string]interface{}{"userid": "0bc83cb571cd1c50ba6f3e8a78ef1346"}
-	//作成したクライアントのアバター画像URLを取得する
-	url, err := gravatarAvatar.GetAvatarURL(client)
-	//正しいURLかどうか確認
-	if err != nil {
+	// client := new(client) //クライアント作成
+	// client.userData = map[string]interface{}{"userid": "0bc83cb571cd1c50ba6f3e8a78ef1346"} //メールアドレスの代わりにuserid使用
+	// url, err := gravatarAvatar.GetAvatarURL(client) //作成したクライアントのアバター画像URLを取得する
+	user := &chatUser{uniqueID: "abc"}
+	url, err := gravatarAvatar.GetAvatarURL(user)
+	if err != nil { //正しいURLかどうか確認
 		t.Error("GravatarAvatar.GetAvatarURLはエラーを返すべきではありません")
 	}
 	if url != "//www.gravatar.com/avatar/0bc83cb571cd1c50ba6f3e8a78ef1346" {
@@ -54,11 +59,10 @@ func TestFileSystemAvatar(t *testing.T) {
 
 	//
 	var fileSystemAvatar FileSystemAvatar
-	//生成したクライアントにuseridを入れてる
-	client := new(client)
-	client.userData = map[string]interface{}{"userid": "abc"}
-
-	url, err := fileSystemAvatar.GetAvatarURL(client)
+	// client := new(client)
+	// client.userData = map[string]interface{}{"userid": "abc"}
+	user := &chatUser{uniqueID: "abc"}
+	url, err := fileSystemAvatar.GetAvatarURL(user)
 	if err != nil {
 		t.Error("FileSystemAvatar.GetAvatarURLはエラーを返すべきではありません")
 	}

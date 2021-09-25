@@ -15,6 +15,12 @@ import (
 	"github.com/stretchr/objx"
 )
 
+//この順番でURLが取得される
+var avatars Avatar = TryAvatars{
+	UseFileSystemAvatar,
+	UserAuthAvatar,
+	UseGravatar}
+
 //【目的】ファイルからテンプレートを作成し、データを出力する
 type templateHandler struct { //テンプレートの構造
 	once     sync.Once //一度だけ実行
@@ -54,7 +60,7 @@ func main() {
 	)
 	// r := newRoom(UserAuthAvatar)
 	// r := newRoom(UseGravatar)
-	r := newRoom(UseFileSystemAvatar)
+	r := newRoom()
 	//①"/chat"にアクセス②MustAuth内でtemplateHandlerをラップしたauthHandlerが生成③authHandlerが生成されたことでauthHandlerのServeHTTPが呼ばれる(authというcookieの有無をチェック)
 	//④認証成功したら、templateHandlerのServeHTTPが呼ばれる
 	//④認証失敗したら、http.ResponseWriterに対してHeader,WriteHandlerを呼び出し、ログインページにリダイレクト

@@ -19,15 +19,13 @@ type room struct {
 }
 
 //newRoomではすぐに利用できるチャットルームを生成して返す
-func newRoom(avatar Avatar) *room { //⑤引数として使用したAuthAvatarは、GetAvatarURLを持っているのでAvatar型として使うことができる
+func newRoom() *room { //⑤引数として使用したAuthAvatarは、GetAvatarURLを持っているのでAvatar型として使うことができる
 	return &room{
 		forward: make(chan *message),
 		join:    make(chan *client),
 		leave:   make(chan *client),
 		clients: make(map[*client]bool),
 		tracer:  trace.Off(),
-		avatar:  avatar,
-		// avatar:  UserAuthAvatar,　newRoom()引数なしの←だとなぜダメなの？Avatar型(Avatarインターフェース)のGetAvatarURLを使いたいから。　UserAuthAvatarがAuthAvatar型だから、Avatar型に直さなきゃいけない
 	}
 }
 
