@@ -21,7 +21,7 @@ WebSocket を使ったチャットアプリケーション
   - 認証完了時にアバター画像を取得。アバター画像の取得方法は以下。
   - ①gomniauth Userインターフェースに実装されているAvatarURL()メソッドを使用
   - ② `//www.gravatar.com/avatar/" + ユーザのUniqueID()` で取得できる。uniqueIDに関しては、md5アルゴリズムを適用し、ユーザ名の文字列からハッシュ値を算出し、それをuniqueIDとして、URLに埋め込んでいる。
-  - ③アバター画像はフォルダ内の/例)avatars/{uniqueID}.jpeg で保存されているので、それを取得するイメージ.uniqueIDは②同様に、md5アルゴリズムを用いて算出している。
+  - ③アバター画像はフォルダ内の/avatars/uniqueID.jpeg で保存されているので、それを取得するイメージ.uniqueIDは②同様に、md5アルゴリズムを用いて算出している。
 <br />
 <br />
 <br />
