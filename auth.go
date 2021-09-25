@@ -9,8 +9,18 @@ import (
 	"strings"
 
 	"github.com/stretchr/gomniauth"
+	gomniauthcommon "github.com/stretchr/gomniauth/common"
 	"github.com/stretchr/objx"
 )
+
+type ChatUser interface {
+	UniqueID() string //変数UniqueIDを定義するのではなく、UniqueIDを探してくるUniqueID()メソッドを定義している
+	AvatarURL() string
+}
+type chatUser struct {
+	gomniauthcommon.User
+	uniqueID string
+}
 
 //loginHandlerはサードパーティへのログインの処理を受け持つ.アプリ内ではなくどこか外部へ認証を行うってこと?
 //パスの形式：　/auth/{action}/{provider}
