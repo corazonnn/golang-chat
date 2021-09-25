@@ -18,8 +18,8 @@ type ChatUser interface {
 	AvatarURL() string
 }
 type chatUser struct {
-	gomniauthcommon.User
-	uniqueID string
+	gomniauthcommon.User //gomniauth.common.Userという型が埋め込まれ、chatUserは自動的にGomniauthのUserインターフェースを実装したことになってる
+	uniqueID             string
 }
 
 func (u chatUser) UniqueID() string {
