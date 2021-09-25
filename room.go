@@ -72,7 +72,7 @@ var upgrader = &websocket.Upgrader{ReadBufferSize: socketBufferSize, WriteBuffer
 //*room型をhttp.Handler型に適合(ServeHTTPメソッドを定義)することで,*roomはHTTPハンドラとして扱えるようになる
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	//websocketを利用するためにUpgradeする必要がある
-	socket, err := upgrader.Upgrade(w, req, nil) //何してる？？HTTP通信からwebsocket通信に更新(具体的にはハンドシェイクしてる)
+	socket, err := upgrader.Upgrade(w, req, nil) //HTTP通信からwebsocket通信に更新(ハンドシェイク)
 	if err != nil {
 		log.Fatal("ServeHTTP:", err)
 		return
